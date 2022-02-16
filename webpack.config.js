@@ -1,21 +1,20 @@
 const path = require("path");
 const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin")
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
 
 const isProduction = true;
 
 module.exports = {
-  mode:"development",
+  mode: "development",
   entry: {
     index: ["./src/index.js"],
   },
 
-
   output: {
     path: path.join(__dirname, "dist"),
-    filename:  "index.bundle.js",
+    filename: "index.bundle.js",
   },
 
   module: {
@@ -26,6 +25,9 @@ module.exports = {
           return /node_modules/.test(file) && !/\.vue\.js/.test(file);
         },
         loader: "babel-loader",
+        options: {
+          preset: ["@babel/preset-env"],
+        },
       },
       {
         test: /\.css$/,
@@ -55,7 +57,7 @@ module.exports = {
 
   plugins: [
     new MiniCssExtractPlugin({
-      filename: "asset/name.[contenthash].css"
+      filename: "asset/name.[contenthash].css",
     }),
     new HtmlWebpackPlugin({
       filename: "index.html",
@@ -73,8 +75,6 @@ module.exports = {
       env: isProduction ? "production" : "", // for ejs add script links
     }),
   ],
-
-  
 
   optimization: {
     minimizer: [
@@ -110,5 +110,13 @@ module.exports = {
         sourceMap: true,
       }),
     ],
+  },
+  devServer: {
+    static: {
+      directory: path.join(__dirname, "dist"),
+    },
+    compress: true,
+    hot: true,
+    port: 6789,
   },
 };
